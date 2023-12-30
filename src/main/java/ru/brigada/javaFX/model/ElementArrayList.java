@@ -1,7 +1,5 @@
 package ru.brigada.javaFX.model;
-
 import java.util.LinkedList;
-
 public class ElementArrayList {
     private static int maxValue = 0;
     private static LinkedList<Element> INSTANCE;

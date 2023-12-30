@@ -5,7 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.brigada.javaFX.controller.MainController">
+<StackPane fx:id="mainPane" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.brigada.javaFX.controller.MainController">
 
       <VBox prefHeight="200.0" prefWidth="100.0">
 
@@ -32,28 +33,57 @@
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin></Button>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Сгенерировать элементы случайно:" textAlignment="CENTER" wrappingWidth="196.13671875">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="55.0" />
+               </HBox.margin>
+            </Text>
+            <Button fx:id="generateButton" mnemonicParsing="false" onAction="#generateButton" text="Генерация" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Button>
                 </HBox>
                 <HBox prefHeight="100.0" prefWidth="200.0">
-                    <Text text="Удалить элемент:" textAlignment="CENTER">
+                    <Text text="Удалить все элементы:" textAlignment="CENTER">
                         <font>
                             <Font size="20.0" />
                         </font>
                <HBox.margin>
-                  <Insets left="20.0" />
+                  <Insets left="10.0" />
                </HBox.margin></Text>
-                    <Button fx:id="removeButton" prefHeight="30.0" prefWidth="30.0" text="-" textAlignment="CENTER">
+                    <Button fx:id="removeButton" onAction="#removeAllElements" prefHeight="30.0" prefWidth="30.0" text="-" textAlignment="CENTER">
                         <font>
                             <Font name="System Bold Italic" size="14.0" />
                         </font>
                         <HBox.margin>
-                            <Insets left="15.0" />
+                            <Insets left="10.0" />
                         </HBox.margin></Button>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Количество элементов:" textAlignment="CENTER">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Text>
+            <TextField fx:id="numTextField" prefHeight="7.0" prefWidth="90.0" promptText="0" text="0">
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </TextField>
                 </HBox>
             </VBox>
-      <Pane fx:id="paneSort" prefHeight="220.0" prefWidth="600.0" />
+      <Pane fx:id="paneSort" prefHeight="400.0" prefWidth="600.0" />
       <HBox alignment="CENTER" prefHeight="50.0" prefWidth="600.0">
          <children>
-            <Button mnemonicParsing="false" text="Запустить сортировку" textAlignment="CENTER" />
+            <Button fx:id="sortButton" mnemonicParsing="false" onAction="#sortAllElements" text="Запустить сортировку" textAlignment="CENTER" />
          </children>
       </HBox>
 
