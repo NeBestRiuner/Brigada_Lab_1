@@ -19,6 +19,7 @@ public class App extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
             EventHandler<WindowEvent> windowEventEventHandler = WindowEvent ->{
+                if(MainController.getTimer()!=null)
                 if(MainController.getTimer().isRunning()){
                     MainController.getTimer().stop();
                 }

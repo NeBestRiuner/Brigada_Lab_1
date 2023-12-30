@@ -20,25 +20,62 @@ public class MainController {
     TextField numTextField;
     static Timer timer;
     public void addElementModal() throws Exception{
+        if(timer!=null) {
+            if (!timer.isRunning()) {
+                ModalAddElement modalAddElement = new ModalAddElement();
+                modalAddElement.newWindow();
+            }
+        }else{
             ModalAddElement modalAddElement = new ModalAddElement();
             modalAddElement.newWindow();
+        }
     }
     public void removeAllElements(){
-
-            paneSort.getChildren().clear();
-            ElementArrayList.getInstance().clear();
-            ElementArrayList.setMaxValue(0);
-
+            if(timer!=null) {
+                if(!timer.isRunning()){
+                    paneSort.getChildren().clear();
+                    ElementArrayList.getInstance().clear();
+                    ElementArrayList.setMaxValue(0);
+                }
+            }else{
+                paneSort.getChildren().clear();
+                ElementArrayList.getInstance().clear();
+                ElementArrayList.setMaxValue(0);
+            }
     }
     public void sortAllElements(){
-            if (!ElementArrayList.getInstance().isEmpty()) {
+            if(timer!=null){
+                if(!timer.isRunning()){
+                    if (!ElementArrayList.getInstance().isEmpty()) {
+                        reshape_sort(0,ElementArrayList.getInstance().size()/2);
+                        this.timer = new Timer(System.nanoTime());
+                        timer.start();
+                    }
+                }
+            }else{
                 reshape_sort(0,ElementArrayList.getInstance().size()/2);
                 this.timer = new Timer(System.nanoTime());
                 timer.start();
             }
     }
-    public void generateButton(){
-
+    public void generateButton() {
+        if (timer != null) {
+            if (!timer.isRunning()) {
+                int i = 0;
+                while (i < Integer.parseInt(numTextField.getText())) {
+                    Random rnd = new Random();
+                    int ans = rnd.nextInt(9) + 1;
+                    Element element2 = new Element(ans);
+                    if (ans > ElementArrayList.getMaxValue()) {
+                        ElementArrayList.setMaxValue(ans);
+                    }
+                    paneSort_S.getChildren().add(element2);
+                    ElementArrayList.getInstance().add(element2);
+                    reshape();
+                    i++;
+                }
+            }
+        } else {
             int i = 0;
             while (i < Integer.parseInt(numTextField.getText())) {
                 Random rnd = new Random();
@@ -52,7 +89,7 @@ public class MainController {
                 reshape();
                 i++;
             }
-
+        }
     }
     public static void reshape(){
         ListIterator<Element> iter = ElementArrayList.getInstance().listIterator();
