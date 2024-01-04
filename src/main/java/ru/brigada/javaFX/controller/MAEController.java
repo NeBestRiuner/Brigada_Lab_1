@@ -26,7 +26,7 @@ public class MAEController {
                 ElementArrayList.setMaxValue(value);
             }
             Element element = new Element( value);
-            Pane paneSort = MainController.getPaneSort_S();
+            Pane paneSort = MainController.getScrollPane_S();
             paneSort.getChildren().add(element);
             ElementArrayList.getInstance().add(element);
             MainController.reshape();
