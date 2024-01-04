@@ -1,7 +1,8 @@
 package ru.brigada.javaFX.controller;
 import javafx.fxml.FXML;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import ru.brigada.javaFX.model.Element;
 import ru.brigada.javaFX.model.ElementArrayList;
 import ru.brigada.javaFX.model.ModalAddElement;
@@ -11,11 +12,14 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 public class MainController {
-    static private Pane paneSort_S;
+    static private Pane scrollPane_S;
     @FXML
     Pane paneSort;
+
+    Pane scrollPane;
     @FXML
     Button removeButton, sortButton, generateButton;
+    ScrollPane sc;
     @FXML
     TextField numTextField;
     static Timer timer;
@@ -33,12 +37,12 @@ public class MainController {
     public void removeAllElements(){
             if(timer!=null) {
                 if(!timer.isRunning()){
-                    paneSort.getChildren().clear();
+                    scrollPane.getChildren().clear();
                     ElementArrayList.getInstance().clear();
                     ElementArrayList.setMaxValue(0);
                 }
             }else{
-                paneSort.getChildren().clear();
+                scrollPane.getChildren().clear();
                 ElementArrayList.getInstance().clear();
                 ElementArrayList.setMaxValue(0);
             }
@@ -47,13 +51,11 @@ public class MainController {
             if(timer!=null){
                 if(!timer.isRunning()){
                     if (!ElementArrayList.getInstance().isEmpty()) {
-                        reshape_sort(0,ElementArrayList.getInstance().size()/2);
                         this.timer = new Timer(System.nanoTime());
                         timer.start();
                     }
                 }
             }else{
-                reshape_sort(0,ElementArrayList.getInstance().size()/2);
                 this.timer = new Timer(System.nanoTime());
                 timer.start();
             }
@@ -69,7 +71,10 @@ public class MainController {
                     if (ans > ElementArrayList.getMaxValue()) {
                         ElementArrayList.setMaxValue(ans);
                     }
-                    paneSort_S.getChildren().add(element2);
+                    if(ElementArrayList.getInstance().size()>15){
+                          scrollPane.setMinWidth(ElementArrayList.getInstance().size()*40);
+                    }
+                    scrollPane.getChildren().add(element2);
                     ElementArrayList.getInstance().add(element2);
                     reshape();
                     i++;
@@ -77,6 +82,7 @@ public class MainController {
             }
         } else {
             int i = 0;
+
             while (i < Integer.parseInt(numTextField.getText())) {
                 Random rnd = new Random();
                 int ans = rnd.nextInt(9) + 1;
@@ -84,7 +90,10 @@ public class MainController {
                 if (ans > ElementArrayList.getMaxValue()) {
                     ElementArrayList.setMaxValue(ans);
                 }
-                paneSort_S.getChildren().add(element2);
+                if(ElementArrayList.getInstance().size()>15){
+                    scrollPane.setMinWidth(ElementArrayList.getInstance().size()*40);
+                }
+                scrollPane.getChildren().add(element2);
                 ElementArrayList.getInstance().add(element2);
                 reshape();
                 i++;
@@ -93,94 +102,55 @@ public class MainController {
     }
     public static void reshape(){
         ListIterator<Element> iter = ElementArrayList.getInstance().listIterator();
-        Pane paneSort = paneSort_S;
-        double x = paneSort.getWidth() / ElementArrayList.getInstance().size();
         int i = 0;
         while (iter.hasNext()) {
+            Element elementI = iter.next();
+            System.out.println(elementI.getNumber());
+            int width = 40;
+            elementI.setLayoutX(i*width);
+            elementI.setMinWidth(width);
+            elementI.setMaxWidth(width);
+            int height = 50;
+            elementI.setMinHeight(height);
+            elementI.setMaxHeight(height);
+            elementI.setLayoutY(150);
+            i++;
+        }
 
-            Element elementI = iter.next();
-            System.out.println(elementI.getNumber());
-            elementI.setLayoutX(x * i);
-            elementI.setMinWidth(x);
-            elementI.setMaxWidth(x);
-            double height = (double) elementI.getNumber() / (double) ElementArrayList.getMaxValue() * 200;
-            elementI.setMinHeight(height);
-            elementI.setMaxHeight(height);
-            elementI.setLayoutY(400 - height);
-            i++;
-        }
     }
-    public static void reshape_sort(int i1, int i2){
-        ListIterator<Element> iter = ElementArrayList.getInstance().listIterator();
-        Pane paneSort = paneSort_S;
-        double x = paneSort.getWidth() / ElementArrayList.getInstance().size()/2;
-        int i = 0;
-        while (iter.hasNext()) {
-            Element elementI = iter.next();
-            System.out.println(elementI.getNumber());
-            if(i<i2) {
-                elementI.setLayoutX(x * i + 300);
-            }else{
-                elementI.setLayoutX(x*(i-i2)+300);
-            }
-            elementI.setMinWidth(x);
-            elementI.setMaxWidth(x);
-            double height = (double) elementI.getNumber() / (double) ElementArrayList.getMaxValue() * 180;
-            elementI.setMinHeight(height);
-            elementI.setMaxHeight(height);
-            if(i<i2) {
-                elementI.setLayoutY(400 - height);
-            }else{
-                elementI.setLayoutY(200 - height);
-            }
-            i++;
+    public static void reshape_sort(int n, Element [][] twoDiam){
+        int i;
+        for(i = 0; i < ElementArrayList.getInstance().size(); i++){
+                twoDiam[i/n][i%n].setLayoutY(((int)i/n)*100+50);
+                System.out.println(twoDiam[i/n][i%n].getLayoutY()+"lY");
+                twoDiam[i/n][i%n].setLayoutX((40*(i%n))+ElementArrayList.getInstance().size()*40);
         }
-    }
-    public static void reshape_merge(int i1, int i2, int i3){
-        ListIterator<Element> iter = ElementArrayList.getInstance().listIterator();
-        Pane paneSort = paneSort_S;
-        double x = paneSort.getWidth() / ElementArrayList.getInstance().size()/2;
-        int i = 0;
-        while (iter.hasNext()) {
-            Element elementI = iter.next();
-            System.out.println(elementI.getNumber());
-            if(i<i3){
-                elementI.setLayoutX(x*i);
-            }else{
-                if(i<i2) {
-                    elementI.setLayoutX(x * (i-i1) + 300);
-                }else{
-                    elementI.setLayoutX(x*(i-i2)+300);
-                }
-            }
-            elementI.setMinWidth(x);
-            elementI.setMaxWidth(x);
-            double height = (double) elementI.getNumber() / (double) ElementArrayList.getMaxValue() * 180;
-            elementI.setMinHeight(height);
-            elementI.setMaxHeight(height);
-            if (i<i3){
-                elementI.setLayoutY(300-height);
-            }else{
-                if(i<i2) {
-                    elementI.setLayoutY(400 - height);
-                }else{
-                    elementI.setLayoutY(200 - height);
-                }
-            }
-            i++;
+        if(ElementArrayList.getInstance().size()>7){
+            scrollPane_S.setMinWidth(ElementArrayList.getInstance().size()*40+(40*n));
         }
+        if(ElementArrayList.getInstance().size()>15){
+            scrollPane_S.setMinHeight(100*n);
+        }
+
     }
     public void initialize(){
-        paneSort_S = paneSort;
-        System.out.println(paneSort_S+" Сработало");
+        this.sc = new ScrollPane();
+        sc.setPannable(true);
+        paneSort.getChildren().add(sc);
+        this.scrollPane = new Pane();
+        scrollPane.setPrefSize(600,400);
+        sc.setFitToHeight(true);
+        sc.setFitToWidth(true);
+        sc.setContent(this.scrollPane);
+        scrollPane_S = scrollPane;
         Pattern pattern = Pattern.compile("(\\d*)?");
         numTextField.textProperty().addListener(((observable, oldValue, newValue) -> {
             if(!pattern.matcher(newValue).matches()||(newValue.length()>3)) numTextField.setText(oldValue);
         }));
 
     }
-    public static Pane getPaneSort_S() {
-        return paneSort_S;
+    public static Pane getScrollPane_S() {
+        return scrollPane_S;
     }
     public static Timer getTimer(){
         return timer;

@@ -3,367 +3,312 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Border;
 import ru.brigada.javaFX.model.Element;
 import ru.brigada.javaFX.model.ElementArrayList;
+
+import static java.lang.Math.sqrt;
+
 public class Timer extends AnimationTimer {
-    private long lastTime, lastTime2, lastTime3=0;
-    private int i1=0, i1c= ElementArrayList.getInstance().size()/2,
-            i2c=ElementArrayList.getInstance().size() - ElementArrayList.getInstance().size()/2;
-    private int i2=ElementArrayList.getInstance().size()/2;
-    private int found1 = 1, found2 = 1, worked1 = 0, worked2 = 0, i3=0, step1=0, step2=0, step3=0 ;
+    int iArray[];
+    int workeds[];
+    int obmens[];
+    int wrongTime;
+    int lengthArray;
+    int unitedElements;
+    int minNumPart=-1;
+    private long lastTimes[];
+    private long lastTime3;
     private boolean running;
+    private int n;
+    private Element twoDiamArray[][];
     @Override
     public void start() {
         super.start();
         running = true;
     }
-
     @Override
     public void stop() {
         super.stop();
         running = false;
     }
-
     @Override
     public void handle(long now) {
-        long anim = (now-lastTime)/1_000_000_000;
-        //System.out.println(anim+" anim");
-        //System.out.println(now+"now "+lastTime+" lastTime");
-        if(anim >= 2 && found1==1) {
-            ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #2850f0");
-            //ElementArrayList.getInstance().get(i1+1).setStyle("-fx-background-color: #f0c828");
-
-            if( anim >=4) {
-                if (i1+1<((ElementArrayList.getInstance().size() - ElementArrayList.getInstance().size()%2) / 2)){
-                    ElementArrayList.getInstance().get(i1 + 1).setStyle("-fx-background-color: #f0c828");
-                }
-                if(anim>=6){
-                if (i1 < ((ElementArrayList.getInstance().size() - 1) / 2) - ElementArrayList.getInstance().size() % 2) {
-                    if ((ElementArrayList.getInstance().get(i1).getNumber() >
-                            ElementArrayList.getInstance().get(i1 + 1).getNumber())) {
-
-                            ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #008000");
-                            ElementArrayList.getInstance().get(i1+1).setStyle("-fx-background-color: #008000");
-                        if(anim>=8){
-                        worked1 = 1;
-                        Element elem = ElementArrayList.getInstance().get(i1);
-                        ElementArrayList.getInstance().set(i1, ElementArrayList.getInstance().get(i1 + 1));
-                        ElementArrayList.getInstance().set(i1 + 1, elem);
-
-                        MainController.reshape_sort(0,i1c);
-                            lastTime = now;
-                            ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #fff");
-                            ElementArrayList.getInstance().get(i1 + 1).setStyle("-fx-background-color: #2850f0");
-                            i1++;
-                    }
-                    }else{
-                        ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #FF0000");
-                        ElementArrayList.getInstance().get(i1+1).setStyle("-fx-background-color: #FF0000");
-                        if(anim>=8) {
-                            lastTime = now;
-                            ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #fff");
-                            ElementArrayList.getInstance().get(i1 + 1).setStyle("-fx-background-color: #2850f0");
-                            i1++;
-                        }
-                    }
-
-
-
-                } else {
-                    lastTime = now;
-                    ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #fff");
-                    i1 = 0;
-                    if (worked1 == 1) {
-                        worked1 = 0;
-                    } else {
-                        found1 = 0;
-                    }
+        int  i;
+        if(wrongTime==0||wrongTime==-1){
+            for(i=0; i<n;i++){
+                long animI = (now-lastTimes[i])/1_000_000_000;
+                sort(now,animI,i);
+            }
+            wrongTime=0;
+            for(i = 0;i<n;i++){
+                if(workeds[i]!=-1){
+                    wrongTime=-1;
                 }
             }
-        }
-        }
-        long anim2 = (now-lastTime2)/1_000_000_000;
-        //System.out.println(now+"now "+lastTime2+" lastTime2");
-        //System.out.println(anim2+" anim2");
-        if(anim2 >= 2 && found2==1) {
-            ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #2850f0");
-            //ElementArrayList.getInstance().get(i1+1).setStyle("-fx-background-color: #f0c828");
-
-            if( anim2 >=4) {
-                if (i2+1<((ElementArrayList.getInstance().size()))){
-                    ElementArrayList.getInstance().get(i2 + 1).setStyle("-fx-background-color: #f0c828");
-                }
-                if(anim2>=6){
-                    if (i2 < (ElementArrayList.getInstance().size() - 1)) {
-                        if ((ElementArrayList.getInstance().get(i2).getNumber() >
-                                ElementArrayList.getInstance().get(i2 + 1).getNumber())) {
-
-                            ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #008000");
-                            ElementArrayList.getInstance().get(i2+1).setStyle("-fx-background-color: #008000");
-                            if(anim2>=8){
-                                worked2 = 1;
-                                Element elem = ElementArrayList.getInstance().get(i2);
-                                ElementArrayList.getInstance().set(i2, ElementArrayList.getInstance().get(i2 + 1));
-                                ElementArrayList.getInstance().set(i2 + 1, elem);
-
-
-                                MainController.reshape_sort(0,i1c);
-                                lastTime2 = now;
-                                ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #fff");
-                                ElementArrayList.getInstance().get(i2 + 1).setStyle("-fx-background-color: #2850f0");
-                                i2++;
-                            }
-                        }else{
-                            ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #FF0000");
-                            ElementArrayList.getInstance().get(i2+1).setStyle("-fx-background-color: #FF0000");
-                            if(anim2>=8) {
-                                lastTime2 = now;
-                                ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #fff");
-                                ElementArrayList.getInstance().get(i2 + 1).setStyle("-fx-background-color: #2850f0");
-                                i2++;
-                            }
-                        }
-
-
-
-                    } else {
-                        lastTime2 = now;
-                        ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #fff");
-                        i2 = ElementArrayList.getInstance().size()/2;
-                        if (worked2 == 1) {
-                            worked2 = 0;
-                        } else {
-                            found2 = 0;
-                        }
-                    }
-                }
+            if(wrongTime==0){// если все строки отсортированы
+                wrongTime=1;
+                lengthArray=ElementArrayList.getInstance().size();// сохраняем размер исходного списка
+                ElementArrayList.getInstance().clear(); // очищаем список для последующей записи
+                lastTime3=now;
+                unitedElements=0;// кол-во элементов в будущем выходном списке
             }
-        }
-        if(found1==0&&found2==0){
-            if(lastTime3==0&&lastTime>lastTime2){
-                lastTime3=lastTime;
+        }else{
+            if(unitedElements<lengthArray){// пока все элементы не будут перенесены в выходной список
+                long anim = (now-lastTime3)/1_000_000_000;
+                unite(n,anim,now); // слияние
             }else{
-                if(lastTime3==0){
-                    lastTime3=lastTime2;
-                }
+                System.out.println("Xnj");
+                this.stop();
             }
-            // System.out.println(i1c+" i1c");
-           // System.out.println(i2c+" i2c");
-            if(i1c>0 && i2c>0){
-                ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #2850f0");
-                ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #2850f0");
-                if((now-lastTime3)/1_000_000_000>=2){
-                    if(ElementArrayList.getInstance().get(i1).getNumber()<=ElementArrayList.getInstance().get(i2).getNumber()){
-                        ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #008000");
-                        ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #FF0000");
-                        if(step1==0){
-                            step1=1;
-                            /*double height = (double) ElementArrayList.getInstance().get(i1).getNumber() / (double) ElementArrayList.getMaxValue() * 200;
-                            if(ElementArrayList.getInstance().get(i1).getLayoutY()<=200-height){
-                                step1=1;
-                            }
-                            System.out.println(ElementArrayList.getInstance().get(i1).getLayoutY());
-                            ElementArrayList.getInstance().get(i1).setLayoutY(ElementArrayList.getInstance().get(i1).getLayoutY()-1);*/
-                        }
-                        if(step1==1 && step2==0){
-                            int in=i3+1;
-                            double weight = 300/ElementArrayList.getInstance().size();
-                            int ipo=0;
-                            if(ElementArrayList.getInstance().get(in).getLayoutX()>=(ipo)*weight+300){
-                                while (in<ElementArrayList.getInstance().size()-i2c){
-                                    ElementArrayList.getInstance().get(in).setLayoutX(ElementArrayList.getInstance().get(in).getLayoutX()-1);
-                                    in++;
-                                    ipo++;
-                                }
-                            }
-                            if(ElementArrayList.getInstance().get(i1).getLayoutX()<=weight*i3){
-                                step2=1;
-                            }
-                            ElementArrayList.getInstance().get(i1).setLayoutX(ElementArrayList.getInstance().get(i1).getLayoutX()-1);
-                        }
-                        if(step2==1 && step3==0){
-                            double height = (double) ElementArrayList.getInstance().get(i1).getNumber() / (double) ElementArrayList.getMaxValue() * 180;
-                            System.out.println(ElementArrayList.getInstance().get(i2).getLayoutY());
-                            if(ElementArrayList.getInstance().get(i1).getLayoutY()<= 300-height){
-                                step3=1;
-                            }
-                            ElementArrayList.getInstance().get(i1).setLayoutY(ElementArrayList.getInstance().get(i1).getLayoutY()-1);
-                        }
-                        if(step1!=0&&step2!=0&&step3!=0){
-                            ElementArrayList.getInstance().add(i3, ElementArrayList.getInstance().get(i1));
-                            ElementArrayList.getInstance().remove(i1 + 1);
-                            MainController.reshape_merge(i3+1,ElementArrayList.getInstance().size()-i2c,i3+1);
-                            ElementArrayList.getInstance().get(i3).setStyle("-fx-background-color: #fff");
-                            ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #fff");
-                            lastTime3=now;
-                            i1++;
-                            i3++;
-                            i1c--;
-                            step1=step2=step3=0;
-                        }
-                    }else{
-                        ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #008000");
-                        ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #FF0000");
-                        if(step1==0){
-                            step1=1;
-                            /*
-                            double height = (double) ElementArrayList.getInstance().get(i2).getNumber() / (double) ElementArrayList.getMaxValue() * 200;
-                            if(ElementArrayList.getInstance().get(i2).getLayoutY()<=200-height){
-                                step1=1;
-                            }
-                            System.out.println(ElementArrayList.getInstance().get(i2).getLayoutY());
-                            ElementArrayList.getInstance().get(i2).setLayoutY(ElementArrayList.getInstance().get(i2).getLayoutY()-1);
-                            */
-                        }
-                        if(step1==1 && step2==0){
-
-                            int in=ElementArrayList.getInstance().size()-i2c+1;
-                            double weight = 300/ElementArrayList.getInstance().size();
-                            int ipo=0;
-                            if(i2c!=1)
-                            if(ElementArrayList.getInstance().get(in).getLayoutX()>=(ipo)*weight+300){
-                                while (in<ElementArrayList.getInstance().size()){
-                                    ElementArrayList.getInstance().get(in).setLayoutX(ElementArrayList.getInstance().get(in).getLayoutX()-1);
-                                    in++;
-                                    ipo++;
-                                }
-                            }
-                            if(ElementArrayList.getInstance().get(i2).getLayoutX()<= weight*i3){
-                                step2=1;
-                            }
-                            ElementArrayList.getInstance().get(i2).setLayoutX(ElementArrayList.getInstance().get(i2).getLayoutX()-1);
-                        }
-                        if(step2==1 && step3==0){
-                            double height = (double) ElementArrayList.getInstance().get(i2).getNumber() / (double) ElementArrayList.getMaxValue() * 180;
-                            System.out.println(ElementArrayList.getInstance().get(i2).getLayoutY());
-                            if(ElementArrayList.getInstance().get(i2).getLayoutY()>= 300-height){
-                                step3=1;
-                            }
-
-                            ElementArrayList.getInstance().get(i2).setLayoutY(ElementArrayList.getInstance().get(i2).getLayoutY()+1);
-                        }
-                        if(step2==1 && step3==1){
-                            i2c--;
-                            ElementArrayList.getInstance().add(i3,ElementArrayList.getInstance().get(i2));
-                            ElementArrayList.getInstance().remove(i2+1);
-                            MainController.reshape_merge(i3+1,ElementArrayList.getInstance().size()-i2c,i3+1);
-                            ElementArrayList.getInstance().get(i3).setStyle("-fx-background-color: #fff");
-                            ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #fff");
-                            lastTime3=now;
-                            step1=step2=step3=0;
-                            i1++;
-                            i2++;
-                            i3++;
-
-                        }
-                    }
-                }
-
-            }else{
-                if(i1c>0 && i2c==0){
-                    ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #008000");
-                    int in=ElementArrayList.getInstance().size()-i1c;
-                    double weight = 300/ElementArrayList.getInstance().size();
-                    if(step1==0){
-                        if(ElementArrayList.getInstance().get(i1).getLayoutX()<=weight*i3){
-                            step1=1;
-                        }
-                        ElementArrayList.getInstance().get(i1).setLayoutX(ElementArrayList.getInstance().get(i1).getLayoutX()-1);
-                        int ipo=0;
-                        if(ElementArrayList.getInstance().get(in).getLayoutX()<=(ipo)*weight+300){
-                            while (in<ElementArrayList.getInstance().size()){
-                                ElementArrayList.getInstance().get(in).setLayoutX(ElementArrayList.getInstance().get(in).getLayoutX()-1);
-                                in++;
-                                ipo++;
-                            }
-                        }
-                        /*
-                        double height = (double) ElementArrayList.getInstance().get(i1).getNumber() / (double) ElementArrayList.getMaxValue() * 180;
-                        if(ElementArrayList.getInstance().get(i1).getLayoutY()<=200-height){
-                            step1=1;
-                        }
-                        System.out.println(ElementArrayList.getInstance().get(i1).getLayoutY());
-                        ElementArrayList.getInstance().get(i1).setLayoutY(ElementArrayList.getInstance().get(i1).getLayoutY()-1);
-                         */
-                    }
-
-                    if(step1==1 && step3==0){
-                        double height = (double) ElementArrayList.getInstance().get(i1).getNumber() / (double) ElementArrayList.getMaxValue() * 180;
-                        if(ElementArrayList.getInstance().get(i1).getLayoutY()== 300-height){
-                            step3=1;
-                        }
-
-                        ElementArrayList.getInstance().get(i1).setLayoutY(ElementArrayList.getInstance().get(i1).getLayoutY()-1);
-                    }
-                    if(step3==1) {
-                        ElementArrayList.getInstance().add(i3, ElementArrayList.getInstance().get(i1));
-                        ElementArrayList.getInstance().remove(i1 + 1);
-                        MainController.reshape_merge(i3+1,ElementArrayList.getInstance().size()-i2c,i3+1);
-                        ElementArrayList.getInstance().get(i1).setStyle("-fx-background-color: #fff");
-                        i1++;
-                        i3++;
-                        i1c--;
-                        step1=step2=step3=0;
-                    }
-                }else{
-                    if(i1c==0 && i2c>0){
-                        int in = ElementArrayList.getInstance().size()-i2c;
-                        double weight = 300/ElementArrayList.getInstance().size();
-                        ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #008000");
-                        if(step1==0){
-                            if(ElementArrayList.getInstance().get(i1).getLayoutX()<=weight*i3){
-                                step1=1;
-                            }
-                            ElementArrayList.getInstance().get(i1).setLayoutX(ElementArrayList.getInstance().get(i1).getLayoutX()-1);
-                            int ipo=0;
-                            if(ElementArrayList.getInstance().get(in).getLayoutX()>=(ipo)*weight+300){
-                                while (in<ElementArrayList.getInstance().size()){
-                                    ElementArrayList.getInstance().get(in).setLayoutX(ElementArrayList.getInstance().get(in).getLayoutX()-1);
-                                    in++;
-                                    ipo++;
-                                }
-                            }
-                            /*
-                            double height = (double) ElementArrayList.getInstance().get(i2).getNumber() / (double) ElementArrayList.getMaxValue() * 180;
-                            if(ElementArrayList.getInstance().get(i2).getLayoutY()<=200-height){
-                                step1=1;
-                            }
-                            System.out.println(ElementArrayList.getInstance().get(i2).getLayoutY());
-                            ElementArrayList.getInstance().get(i2).setLayoutY(ElementArrayList.getInstance().get(i2).getLayoutY()-1);
-                             */
-                        }
-                        if(step1==1 && step3==0){
-                            double height = (double) ElementArrayList.getInstance().get(i1).getNumber() / (double) ElementArrayList.getMaxValue() * 180;
-                            if(ElementArrayList.getInstance().get(i1).getLayoutY()== 300-height){
-                                step3=1;
-                            }
-                            ElementArrayList.getInstance().get(i1).setLayoutY(ElementArrayList.getInstance().get(i1).getLayoutY()+1);
-                        }
-                        if(step3==1) {
-                            ElementArrayList.getInstance().add(i3, ElementArrayList.getInstance().get(i2));
-                            ElementArrayList.getInstance().remove(i2 + 1);
-                            MainController.reshape_merge(i3+1,ElementArrayList.getInstance().size()-i2c,i3+1);
-                            ElementArrayList.getInstance().get(i2).setStyle("-fx-background-color: #fff");
-                            i1++;
-                            i2++;
-                            i3++;
-                            i2c--;
-                            step1=step2=step3=0;
-                        }
-                    }else{
-                        System.out.println("Xnj");
-                        this.stop();
-                    }
-                }
-            }
-
         }
     }
     public Timer(long lastTime){
-        this.lastTime = lastTime;
-        this.lastTime2=lastTime;
-        this.i2=ElementArrayList.getInstance().size()/2;
-
+        int max = ElementArrayList.getInstance().get(0).getNumber();
+        this.n = (int)sqrt(ElementArrayList.getInstance().size())+1;
+        int i,j;
+        this.twoDiamArray = new Element[n][n];
+        for(i = 0; i < ElementArrayList.getInstance().size(); i++){
+            twoDiamArray[i/n][i%n] = ElementArrayList.getInstance().get(i);
+            if (ElementArrayList.getInstance().get(i).getNumber() > max) //распределение
+                max = ElementArrayList.getInstance().get(i).getNumber();
+        }
+        for (j = n * n - ElementArrayList.getInstance().size()+1; j < n; j++){ // Заполнение "хвоста" последнего
+            twoDiamArray[n - 1][j] = new Element(max+1);
+        }
+        ElementArrayList.setMaxValue(max);
+        MainController.reshape_sort(n,twoDiamArray);
+        lastTimes = new long[n];
+        for(i = 0;i<n; i++){
+            lastTimes[i]=lastTime;
+        }
+        iArray = new int[n];
+        for(i = 0;i<n; i++){
+            iArray[i] = 0;
+        }
+        workeds = new int[n];
+        for (i = 0; i<n; i++){
+            workeds[i]=0;
+        }
+        obmens = new int[n];
+        for (i = 0; i<n; i++){
+            obmens[i]=0;
+        }
+        this.wrongTime = 0;
+        this.lastTime3=lastTime;
     }
-
+    private void obmen(int i){
+        if(twoDiamArray[i][iArray[i]].getLayoutY()>=((int)i)*100&&twoDiamArray[i][iArray[i]].getLayoutX()<=(iArray[i]+1)*40+
+                ElementArrayList.getInstance().size()*40){
+            twoDiamArray[i][iArray[i]].setLayoutY(twoDiamArray[i][iArray[i]].getLayoutY()-1);
+        }else{
+            if(twoDiamArray[i][iArray[i]].getLayoutX()<=(iArray[i]+1)*40+ElementArrayList.getInstance().size()*40){
+                twoDiamArray[i][iArray[i]].setLayoutX(twoDiamArray[i][iArray[i]].getLayoutX()+1);
+                twoDiamArray[i][iArray[i]+1].setLayoutX(twoDiamArray[i][iArray[i]+1].getLayoutX()-1);
+            }else{
+                if(twoDiamArray[i][iArray[i]].getLayoutY()<=((int)i)*100+50){
+                    twoDiamArray[i][iArray[i]].setLayoutY(twoDiamArray[i][iArray[i]].getLayoutY()+1);
+                }else{
+                    obmens[i]=1;
+                }
+            }
+        }
+    }
+    private void sort(long now, long anim, int i ){
+        if(anim >= 2 && workeds[i]!= -1) {
+            if(twoDiamArray[i][iArray[i]]!=null)
+            twoDiamArray[i][iArray[i]].setStyle("-fx-background-color: #2850f0");
+            if( anim >=4) {
+                if(iArray[i]+1<n){
+                    if(twoDiamArray[i][iArray[i]+1]!=null) {
+                        twoDiamArray[i][iArray[i] + 1].setStyle("-fx-background-color: #f0c828");
+                    }else {
+                        lastTimes[i] = now;
+                        if(twoDiamArray[i][iArray[i]]!=null){
+                            twoDiamArray[i][iArray[i]].setStyle("-fx-background-color: #fff");
+                        }iArray[i] = 0;
+                        if (workeds[i] == 1) {
+                            workeds[i] = 0;
+                        } else {
+                            workeds[i] = -1;
+                        }
+                    }
+                }else{
+                        lastTimes[i] = now;
+                        twoDiamArray[i][iArray[i]].setStyle("-fx-background-color: #fff");
+                        iArray[i] = 0;
+                        if (workeds[i] == 1) {
+                            workeds[i] = 0;
+                        } else {
+                            workeds[i] = -1;
+                        }
+                }
+                if(anim>=6){
+                    if (iArray[i]+1<n) {
+                        if(twoDiamArray[i][iArray[i]+1]!=null)
+                        if ((twoDiamArray[i][iArray[i]].getNumber()>           // проверка условия для обмена
+                                twoDiamArray[i][iArray[i]+1].getNumber())) {
+                            // показываем цветом, что условие выполнено
+                            twoDiamArray[i][iArray[i]].setStyle("-fx-background-color: #008000");
+                            twoDiamArray[i][iArray[i]+1].setStyle("-fx-background-color: #008000");
+                            workeds[i]=1;
+                            if(anim>=8){
+                                // анимация обмена
+                            if(obmens[i]!=1){
+                                obmen(i); // метод для обмена двух элементов
+                            }else{
+                                    // перестановка три стакана
+                                    Element elem = twoDiamArray[i][iArray[i]];
+                                    twoDiamArray[i][iArray[i]] = twoDiamArray[i][iArray[i] + 1];
+                                    twoDiamArray[i][iArray[i] + 1] = elem;
+                                    // перерисовываем два элемента
+                                    twoDiamArray[i][iArray[i]].setLayoutY(((int)i)*100+50);
+                                    twoDiamArray[i][iArray[i]].setLayoutX((40*(iArray[i]))+ElementArrayList.getInstance().size()*40);
+                                    twoDiamArray[i][iArray[i]+1].setLayoutY(((int)i)*100+50);
+                                    twoDiamArray[i][iArray[i]+1].setLayoutX((40*(iArray[i]+1))+ElementArrayList.getInstance().size()*40);
+                                    lastTimes[i] = now;
+                                    twoDiamArray[i][iArray[i]].setStyle("-fx-background-color: #fff");
+                                    twoDiamArray[i][iArray[i] + 1].setStyle("-fx-background-color: #fff"); // поменяли на белые
+                                    iArray[i] += 1;
+                                    obmens[i]=0;
+                                }
+                            }
+                        }else{
+                            twoDiamArray[i][iArray[i]].setStyle("-fx-background-color: #FF0000");
+                            twoDiamArray[i][iArray[i]+1].setStyle("-fx-background-color: #FF0000");
+                            if(anim>=8) {
+                                lastTimes[i] = now;
+                                twoDiamArray[i][iArray[i]].setStyle("-fx-background-color: #fff");
+                                twoDiamArray[i][iArray[i]+1].setStyle("-fx-background-color: #fff");
+                                iArray[i]+=1;
+                            }
+                        }
+                    } else {
+                        lastTimes[i] = now;
+                        twoDiamArray[i][iArray[i]].setStyle("-fx-background-color: #fff");
+                        iArray[i] = 0;
+                        if (workeds[i] == 1) {
+                            workeds[i] = 0;
+                        } else {
+                            workeds[i] = -1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    public void unite(int n, long anim, long now){
+        if(anim<=2){
+            int i;
+            for(i = 0; i<n;i++){
+                if(twoDiamArray[i][0]!=null)
+                twoDiamArray[i][0].setStyle("-fx-background-color: #2850f0"); // начальные элементы строк подсвечиваются
+            }
+        }else{
+            if(anim<=4){
+                if(minNumPart==-1) {
+                    int k, j;
+                    for (k = 0, j = 0; j < n; j++) {   // индекс строки с минимальным начальным элементом
+                        if(twoDiamArray[j][0]!=null)
+                        if (twoDiamArray[j][0].getNumber() < twoDiamArray[k][0].getNumber()) {
+                            k = j;
+                        }
+                    }
+                    minNumPart = k;
+                }else{
+                    int j;
+                    for(j = 0; j<n; j++){
+                        if(j!=minNumPart){
+                            if(twoDiamArray[j][0]!=null)
+                            twoDiamArray[j][0].setStyle("-fx-background-color: #FF0000");//все не минимальные элементы - красные
+                        }
+                    }
+                    twoDiamArray[minNumPart][0].setStyle("-fx-background-color: #008000");//минимальный элемент - зелёный
+                }
+            }else{
+                if(twoDiamArray[minNumPart][0].getLayoutX()>unitedElements*40){ // передвигаем минимальный элемент по x
+                    twoDiamArray[minNumPart][0].setLayoutX(twoDiamArray[minNumPart][0].getLayoutX()-1);
+                    for(int j = 1;j<n && twoDiamArray[minNumPart][j]!=null;j++) { // передвигаем все элементы в строке
+                        if(twoDiamArray[minNumPart][j].getLayoutX()>(j-1)*40+(lengthArray*40)){
+                            twoDiamArray[minNumPart][j].setLayoutX(twoDiamArray[minNumPart][j].getLayoutX()-1);
+                        }
+                    }
+                }else{
+                    if(n%2==1){
+                        if(minNumPart<n/2){
+                            if(twoDiamArray[minNumPart][0].getLayoutY()<(((int)(n/2))*100+50)) { // передвигаем по y минимальный элемент
+                                twoDiamArray[minNumPart][0].setLayoutY(twoDiamArray[minNumPart][0].getLayoutY()+1);
+                            }else{
+                                ElementArrayList.getInstance().add(twoDiamArray[minNumPart][0]); // перенос элемента
+                                unitedElements++;
+                                int j;
+                                for (j = 1; j < n; j++){
+                                    twoDiamArray[minNumPart][j - 1] = twoDiamArray[minNumPart][j]; // Сдвиг сливаемой строки
+                                }
+                                twoDiamArray[minNumPart][n - 1] = new Element(ElementArrayList.getMaxValue() + 1); // Запись ограничителя
+                                minNumPart=-1;
+                                lastTime3=now;
+                            }
+                        }
+                        if(minNumPart==n/2){
+                            ElementArrayList.getInstance().add(twoDiamArray[minNumPart][0]); // перенос элемента
+                            unitedElements++;
+                            int j;
+                            for (j = 1; j < n; j++){
+                                twoDiamArray[minNumPart][j - 1] = twoDiamArray[minNumPart][j]; // Сдвиг сливаемой строки
+                            }
+                            twoDiamArray[minNumPart][n - 1] = new Element(ElementArrayList.getMaxValue() + 1); // Запись ограничителя
+                            minNumPart=-1;
+                            lastTime3=now;
+                        }
+                        if(minNumPart>n/2){
+                            if(twoDiamArray[minNumPart][0].getLayoutY()>((int)(n/2))*100+50) { // передвигаем по y минимальный элемент
+                                twoDiamArray[minNumPart][0].setLayoutY(twoDiamArray[minNumPart][0].getLayoutY()-1);
+                            }else{
+                                ElementArrayList.getInstance().add(twoDiamArray[minNumPart][0]); // перенос элемента
+                                unitedElements++;
+                                int j;
+                                for (j = 1; j < n; j++) {
+                                    twoDiamArray[minNumPart][j - 1] = twoDiamArray[minNumPart][j]; // Сдвиг сливаемой строки
+                                }
+                                twoDiamArray[minNumPart][n - 1] = new Element(ElementArrayList.getMaxValue() + 1); // Запись ограничителя
+                                minNumPart=-1;
+                                lastTime3=now;
+                            }
+                        }
+                    }else{
+                        if(minNumPart<n/2){
+                            if(twoDiamArray[minNumPart][0].getLayoutY()<((n/2))*100) { // передвигаем по y минимальный элемент
+                                twoDiamArray[minNumPart][0].setLayoutY(twoDiamArray[minNumPart][0].getLayoutY()+1);
+                            }else{
+                                ElementArrayList.getInstance().add(twoDiamArray[minNumPart][0]); // перенос элемента
+                                unitedElements++;
+                                int j;
+                                for (j = 1; j < n; j++) {
+                                    twoDiamArray[minNumPart][j - 1] = twoDiamArray[minNumPart][j]; // Сдвиг сливаемой строки
+                                }
+                                twoDiamArray[minNumPart][n - 1] = new Element(ElementArrayList.getMaxValue() + 1); // Запись ограничителя
+                                minNumPart=-1;
+                                lastTime3=now;
+                            }
+                        }
+                        if(minNumPart>=n/2){
+                            if(twoDiamArray[minNumPart][0].getLayoutY()>((n/2))*100) { // передвигаем по y минимальный элемент
+                                twoDiamArray[minNumPart][0].setLayoutY(twoDiamArray[minNumPart][0].getLayoutY()-1);
+                            }else{
+                                ElementArrayList.getInstance().add(twoDiamArray[minNumPart][0]); // перенос элемента
+                                unitedElements++;
+                                int j;
+                                for (j = 1; j < n; j++) {
+                                    twoDiamArray[minNumPart][j - 1] = twoDiamArray[minNumPart][j]; // Сдвиг сливаемой строки
+                                }
+                                twoDiamArray[minNumPart][n - 1] = new Element(ElementArrayList.getMaxValue() + 1); // Запись ограничителя
+                                minNumPart=-1;
+                                lastTime3=now;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     public boolean isRunning() {
         return running;
     }

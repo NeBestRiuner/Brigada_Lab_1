@@ -25,6 +25,7 @@ public class App extends Application {
                 }
             };
             primaryStage.setOnCloseRequest(windowEventEventHandler);
+            primaryStage.setResizable(false);
         }
 
         public static void main(String[] args) {
